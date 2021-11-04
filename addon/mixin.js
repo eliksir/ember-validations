@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import Errors from 'ember-validations/errors';
 import Base from 'ember-validations/validators/base';
-import getOwner from 'ember-getowner-polyfill';
 
 const {
   A: emberArray,
@@ -19,7 +18,7 @@ const {
 } = Ember;
 
 const setValidityMixin = Mixin.create({
-  isValid: computed('validators.@each.isValid', function() {
+  isValid: computed('validators.@each.isValid', function () {
     let compactValidators = get(this, 'validators').compact();
     let filteredValidators = compactValidators.filter((validator) => !get(validator, 'isValid'));
 
@@ -29,7 +28,7 @@ const setValidityMixin = Mixin.create({
   isInvalid: not('isValid')
 });
 
-const pushValidatableObject = function(model, property) {
+const pushValidatableObject = function (model, property) {
   let content = get(model, property);
 
   model.removeObserver(property, pushValidatableObject);
@@ -41,8 +40,8 @@ const pushValidatableObject = function(model, property) {
   }
 };
 
-const lookupValidator = function(validatorName) {
-  let owner = getOwner(this);
+const lookupValidator = function (validatorName) {
+  let owner = Ember.getOwner(this);
   let service = owner.lookup('service:validations');
   let validators = [];
   let cache;
@@ -118,7 +117,7 @@ export default Mixin.create(setValidityMixin, {
     this.buildValidators();
 
     this.validators.forEach((validator) => {
-      validator.addObserver('errors.[]', this, function(sender) {
+      validator.addObserver('errors.[]', this, function (sender) {
         let errors = emberArray();
 
         this.validators.forEach((validator) => {
